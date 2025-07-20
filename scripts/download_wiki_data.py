@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from shared.data_parser import WikiDataParser
+from util.data_parser import WikiDataParser
 
 
 def main():
@@ -44,7 +44,7 @@ def main():
     
     try:
         # WikiDataParser 초기화
-        output_dir = project_root / "data" / "raw" / "aiml"
+        output_dir = project_root / "data" / "raw"
         parser = WikiDataParser(api_key, str(output_dir))
         
         print(f"📁 저장 위치: {output_dir}")

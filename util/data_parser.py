@@ -20,7 +20,7 @@ import json
 class WikiDataParser:
     """위키피디아 데이터 파싱 및 처리 클래스"""
     
-    def __init__(self, openai_api_key: str, output_dir: str = "data/raw/aiml"):
+    def __init__(self, openai_api_key: str, output_dir: str = "data/raw/"):
         """
         초기화
         Args:
@@ -829,23 +829,22 @@ class WikiDataParser:
             
         return filename
     
-    def save_document(self, filename: str, title: str, content: str) -> str:
+    def save_document(self, title: str, content: str) -> str:
         """
         Markdown 형식의 문서를 파일로 저장
         
         Args:
-            filename: 파일명 (확장자 제외)
-            title: 문서 제목
+            title: 문서 제목 (파일명으로 사용됨)
             content: Markdown 형식의 문서 내용
             
         Returns:
             저장된 파일 경로
         """
-        # 파일 경로 생성 (.md 확장자 사용)
-        file_path = self.output_dir / f"{filename}.md"
+        # 파일명에 사용할 수 없는 문자 제거
+        clean_title = re.sub(r'[<>:"/\\|?*]', '', title).strip()
         
-        # 디렉토리 생성 (필요시)
-        file_path.parent.mkdir(parents=True, exist_ok=True)
+        # 파일 경로 생성 (.md 확장자 사용)
+        file_path = self.output_dir / f"{clean_title}.md"
         
         # Markdown 메타데이터 추가
         full_content = f"""---
@@ -930,17 +929,9 @@ format: markdown
                     print(f"  - 건너뜀: 내용 없음")
                     continue
                 
-                # 2. GPT 요약 생성
-                print("  - 요약 생성 중...")
-                summary = self.summarize_with_gpt(content, max_length=80)
-                
-                # 3. 파일명 생성
-                english_name = self.get_english_name(title)
-                filename = self.create_filename(title, english_name, summary)
-                
-                # 4. 파일 저장
+                # 2. 파일 저장
                 print("  - 파일 저장 중...")
-                file_path = self.save_document(filename, title, content)
+                file_path = self.save_document(title, content)
                 
                 results[keyword] = file_path
                 print(f"  - 완료: {file_path}")

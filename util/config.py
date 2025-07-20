@@ -12,10 +12,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 # 데이터 경로 설정
 DATA_ROOT = PROJECT_ROOT / "data"
-RAW_DATA_DIR = DATA_ROOT / "raw" / "aiml"
-PROCESSED_DATA_DIR = DATA_ROOT / "processed"
-VECTOR_DB_DIR = DATA_ROOT / "vectordb"
-MCP_DOCS_DIR = DATA_ROOT / "mcp_docs"
+RAW_DATA_DIR = DATA_ROOT / "raw"
 
 # API 설정
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
