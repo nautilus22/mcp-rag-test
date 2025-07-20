@@ -15,4 +15,7 @@ python-dotenv>=1.0.0
 pandas>=2.0.0
 
 # 유틸리티
-pathlib2>=2.3.0 
+pathlib2>=2.3.0
+
+# MCP 서버
+mcp>=1.0.0 

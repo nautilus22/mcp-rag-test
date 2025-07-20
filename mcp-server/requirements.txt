@@ -1,0 +1,7 @@
+# MCP RAG Server 의존성
+
+# MCP 서버 프레임워크
+mcp>=1.0.0
+
+# 기본 유틸리티
+pathlib2>=2.3.0 
