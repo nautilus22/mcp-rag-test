@@ -1,0 +1,21 @@
+[project]
+name = "mcp-rag-server"
+version = "0.1.0"
+description = "MCP RAG Server for Korean Wikipedia documents"
+authors = [
+    {name = "MCP RAG Server", email = "example@example.com"}
+]
+dependencies = [
+    "fastmcp>=2.10.6",
+]
+requires-python = ">=3.10"
+
+[project.scripts]
+mcp-rag-server = "mcp_rag_server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [] 

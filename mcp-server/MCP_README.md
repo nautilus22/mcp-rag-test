@@ -24,12 +24,14 @@ MCP (Model Context Protocol) RAG Server는 위키피디아 문서 기반의 질�
 
 ### 1. 의존성 설치
 ```bash
-# 프로젝트 루트에서 전체 의존성 설치
-pip install -r requirements.txt
-
-# 또는 MCP 서버만 실행하려면
+# mcp-server 폴더로 이동
 cd mcp-server
-pip install -r requirements.txt
+
+# uv를 사용하여 의존성 설치
+uv sync
+
+# 또는 개별 패키지 추가
+uv add fastmcp
 ```
 
 ### 2. 데이터 준비
@@ -52,7 +54,7 @@ mcp-rag-test/
 ### 3. 서버 실행
 ```bash
 cd mcp-server
-python mcp_rag_server.py
+uv run mcp_rag_server.py
 ```
 
 ## MCP 클라이언트 연결
@@ -63,9 +65,13 @@ python mcp_rag_server.py
 {
   "mcpServers": {
     "rag-server": {
-      "command": "python",
-      "args": ["mcp_rag_server.py"],
-      "cwd": "/path/to/your/project/mcp-server"
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/your/project/mcp-server",
+        "run",
+        "mcp_rag_server.py"
+      ]
     }
   }
 }
@@ -142,8 +148,8 @@ python mcp_rag_server.py
 3. 파일 내용에 해당 정보가 실제로 있는지 확인
 
 ### 서버 연결 문제
-1. Python 경로가 올바른지 확인
-2. 의존성이 모두 설치되었는지 확인
+1. uv 명령어가 올바른지 확인
+2. 의존성이 모두 설치되었는지 확인 (`uv sync`)
 3. 로그 메시지 확인
 
 ## 라이센스

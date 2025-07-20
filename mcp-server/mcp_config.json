@@ -1,9 +1,13 @@
 {
   "mcpServers": {
     "rag-server": {
-      "command": "python",
-      "args": ["mcp_rag_server.py"],
-      "cwd": "./mcp-server",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/your/project/mcp-server",
+        "run",
+        "mcp_rag_server.py"
+      ],
       "env": {}
     }
   }

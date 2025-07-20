@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any, List, Dict
 import re
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 # 로깅 설정 (stderr로 출력 - MCP 서버에서는 stdout 사용 금지)
 logging.basicConfig(
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     # 데이터 디렉토리 확인
     if not DATA_DIR.exists():
         logger.warning(f"데이터 디렉토리가 없습니다: {DATA_DIR}")
-        logger.info("data/raw/ 폴더를 생성하고 마크다운 파일을 추가해주세요.")
+        logger.info("../data/raw/ 폴더를 생성하고 마크다운 파일을 추가해주세요.")
     
-    # MCP 서버 실행 (STDIO 모드)
-    mcp.run(transport='stdio') 
+    # FastMCP 서버 실행
+    mcp.run()

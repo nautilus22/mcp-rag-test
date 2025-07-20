@@ -135,11 +135,11 @@ async def main():
     
     # 의존성 체크
     try:
-        from mcp.server.fastmcp import FastMCP
-        print("✅ MCP 의존성 확인됨")
+        from fastmcp import FastMCP
+        print("✅ FastMCP 의존성 확인됨")
     except ImportError:
-        print("❌ MCP 패키지가 설치되지 않았습니다.")
-        print("   pip install mcp 명령으로 설치해주세요.")
+        print("❌ FastMCP 패키지가 설치되지 않았습니다.")
+        print("   uv add fastmcp 명령으로 설치해주세요.")
         return
     
     # 데이터 디렉토리 체크
