@@ -101,14 +101,11 @@ for result in results:
 ```
 rag/
 ├── __init__.py              # 패키지 초기화
-├── markdown_processor.py    # 마크다운 파일 전처리
 ├── vector_store.py         # ChromaDB 벡터 저장소 관리
 ├── rag_system.py           # 통합 RAG 시스템
 ├── rag_gpt_system.py       # RAG + GPT 결합 시스템
 ├── build_vectordb.py       # 벡터 DB 구축 스크립트
-├── search_demo.py          # 기본 검색 데모 스크립트
 ├── chat_demo.py            # RAG + GPT 대화형 채팅
-├── test_rag_gpt.py         # RAG + GPT 테스트 스크립트
 └── README.md               # 이 파일
 ```
 

@@ -36,11 +36,3 @@ WIKI_DOCUMENTS = {
     "alphago": "https://ko.wikipedia.org/wiki/알파고",
     "강화학습": "https://ko.wikipedia.org/wiki/강화_학습"
 }
-
-# 테스트 질문 목록
-TEST_QUESTIONS = [
-    "딥러닝이 뭐야?",
-    "CNN과 RNN의 차이는?", 
-    "GPT가 transformer 기반인 이유는?",
-    "AlphaGo와 관련된 기술들은?"
-] 

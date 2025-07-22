@@ -13,94 +13,134 @@
 
 ## 📂 프로젝트 구조
 
-- **shared/**: 공통 데이터 파싱 및 처리 모듈
-- **rag/**: 단계별 스크립트 기반 RAG 시스템
-- **mcp_server/**: Cursor/Claude 연동용 MCP 서버
-- **data/**: 위키 데이터 및 벡터 DB 저장소
-- **scripts/**: 환경 설정 및 실행 스크립트
-- **docs/**: 사용 가이드 및 문서
+```
+mcp-rag-test/
+├── data/                    # 데이터 저장소
+│   ├── raw/                # 원본 마크다운 파일들
+│   ├── preprocessed/       # 전처리된 텍스트 파일들
+│   └── vectordb/          # ChromaDB 벡터 데이터베이스
+├── mcp-server/            # MCP 서버 (Cursor/Claude 연동)
+│   ├── mcp_rag_server.py  # MCP RAG 서버
+│   ├── mcp_config.json    # MCP 설정 파일
+│   └── test_mcp_server.py # MCP 서버 테스트
+├── rag/                   # RAG 시스템
+│   ├── __init__.py
+│   ├── vector_store.py    # ChromaDB 벡터 저장소
+│   ├── rag_system.py      # 기본 RAG 시스템
+│   ├── rag_gpt_system.py  # RAG + GPT 결합 시스템
+│   ├── build_vectordb.py  # 벡터 DB 구축 스크립트
+│   ├── chat_demo.py       # 대화형 채팅 데모
+│   └── README.md          # RAG 시스템 상세 문서
+├── utils/                 # 유틸리티 및 데이터 처리
+│   ├── __init__.py
+│   ├── config.py          # 공통 설정
+│   ├── data_parser.py     # 위키피디아 데이터 파서
+│   ├── download_wiki_data.py # 위키 데이터 다운로드
+│   ├── markdown_processor.py # 마크다운 전처리
+│   └── text_processor.py  # 텍스트 프로세서
+├── pyproject.toml         # uv 프로젝트 설정
+├── uv.lock               # uv 의존성 잠금 파일
+└── README.md             # 이 파일
+```
 
 ## 🚀 빠른 시작
 
 ### 1. 환경 설정
 
 ```bash
-# 1. 의존성 설치
-pip install -r requirements.txt
+# 1. uv 설치 (아직 설치하지 않은 경우)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 2. API 키 설정
-cp .env.example .env
-# .env 파일에서 OPENAI_API_KEY 설정
+# 2. 의존성 설치
+uv sync
 
-# 또는 환경변수로 직접 설정
+# 3. OpenAI API 키 설정
 export OPENAI_API_KEY='your-api-key-here'
+# 또는 .env 파일 생성 후 설정
+echo "OPENAI_API_KEY=your-api-key-here" > .env
 ```
 
 ### 2. 위키피디아 데이터 다운로드
 
 ```bash
 # AI/ML 관련 한국 위키피디아 문서를 크롤링하고 GPT로 요약
-python scripts/download_wiki_data.py
+uv run python utils/download_wiki_data.py
 ```
 
 이 명령으로 다음이 생성됩니다:
-- `data/raw/aiml/`: 상세한 파일명의 원본 문서들
-- `data/mcp_docs/`: MCP용 간단한 파일명의 문서들
+- `data/raw/`: 원본 마크다운 파일들 (인공지능.md, 딥 러닝.md, CNN.md 등)
 
-### 3-A. RAG 시스템 사용
-
-```bash
-# 단계별 실행
-python rag/scripts/step1_prepare_data.py      # 데이터 준비 및 전처리
-python rag/scripts/step2_build_vectordb.py    # 벡터 DB 구축  
-python rag/scripts/step3_setup_pipeline.py    # RAG 파이프라인 설정
-python rag/scripts/step4_validate.py          # 파이프라인 검증
-
-# 또는 전체 단계 한번에 실행
-python rag/scripts/run_all_steps.py
-
-# 쿼리 실험 (노트북 사용)
-jupyter notebook rag/notebooks/query_experiments.ipynb
-
-# 성능 분석 (선택사항)
-jupyter notebook rag/notebooks/performance_analysis.ipynb
-```
-
-### 3-B. MCP 서버 사용
+### 3. RAG 시스템 구축
 
 ```bash
-# 서버 실행
-python scripts/run_mcp_server.py
-
-# Cursor에서 연결
-# Settings > Extensions > MCP > Add Server: localhost:8000
-
-# Claude Desktop에서 연결  
-# ~/.claude_desktop_config.json 파일 수정
+# 벡터 데이터베이스 구축
+uv run python rag/build_vectordb.py
 ```
+
+이 과정에서:
+- 마크다운 파일들이 전처리되어 `data/preprocessed/`에 저장
+- 청크로 분할되어 벡터화
+- ChromaDB에 저장 (`data/vectordb/`)
+
+### 4. RAG 시스템 사용
+
+```bash
+# 대화형 채팅 시작
+uv run python rag/chat_demo.py
+```
+
+예시 질문:
+- "딥러닝이 뭐야?"
+- "CNN과 RNN의 차이는?"
+- "GPT가 transformer 기반인 이유는?"
+
+### 5. MCP 서버 실행 (선택사항)
+
+```bash
+# MCP 서버 실행
+cd mcp-server
+uv run python mcp_rag_server.py
+```
+
+**Cursor에서 연결:**
+1. Settings > Extensions > MCP > Add Server
+2. Server: `localhost:8000`
+
+**Claude Desktop에서 연결:**
+1. `~/.claude_desktop_config.json` 파일 수정
+2. 제공된 `mcp_config.json` 참조
 
 ## 📋 생성되는 파일 예시
 
-### RAG용 파일 (data/raw/aiml/)
+### 원본 파일 (data/raw/)
 ```
-딥 러닝/Deep Learning/신경망을 여러 층으로 쌓아 복잡한 패턴을 학습하는 기술.txt
-합성곱 신경망/CNN/이미지 인식에 특화된 딥러닝 모델로 필터를 사용해 특징 추출.txt
+인공지능.md
+딥 러닝.md
+합성곱 신경망.md
+순환 신경망.md
+장단기 메모리.md
+게이트 순환 유닛.md
+트랜스포머 (기계 학습).md
+GPT (언어 모델).md
+알파고.md
+강화 학습.md
 ```
 
-### MCP용 파일 (data/mcp_docs/)
+### 전처리 파일 (data/preprocessed/)
 ```
-딥러닝.txt
-cnn.txt  
-rnn.txt
-gpt.txt
+인공지능.txt
+딥 러닝.txt
+합성곱 신경망.txt
+순환 신경망.txt
+...
 ```
 
 ## 🔄 워크플로우
 
 ### RAG 방식
-1. 문서를 벡터화하여 DB에 저장
-2. 쿼리와 유사한 문서 조각 검색
-3. 검색된 컨텍스트로 LLM 답변 생성
+1. 문서를 벡터화하여 ChromaDB에 저장
+2. 쿼리와 유사한 문서 청크 검색
+3. 검색된 컨텍스트로 GPT 답변 생성
 
 ### MCP 방식  
 1. 질문 키워드 분석
@@ -110,10 +150,14 @@ gpt.txt
 ## 🛠️ 주요 기능
 
 - ✅ **한국 위키피디아 크롤링**: AI/ML 관련 11개 문서
-- ✅ **GPT 자동 요약**: MCP 파일명 최적화
-- ✅ **RAG 파이프라인**: 단계별 자동 구축  
+- ✅ **GPT 자동 요약**: 문서 내용 최적화
+- ✅ **마크다운 전처리**: 특수문자, 수식, 링크 제거
+- ✅ **청크 분할**: 의미 있는 단위로 문서 분할
+- ✅ **벡터 임베딩**: OpenAI text-embedding-ada-002 사용
+- ✅ **ChromaDB 저장소**: 효율적인 벡터 저장 및 검색
+- ✅ **RAG + GPT 결합**: 자연스러운 답변 생성
 - ✅ **MCP 서버**: IDE/AI 도구 연동
-- ✅ **성능 비교**: 동일 질문에 대한 답변 품질 테스트
+- ✅ **대화형 채팅**: 실시간 질의응답 인터페이스
 
 ## 📊 테스트 질문 목록
 
@@ -127,16 +171,44 @@ gpt.txt
 | 키워드 | 한국어 위키 | 설명 |
 |--------|-------------|------|
 | 인공지능 | ✅ | AI 기본 개념 |
-| 딥러닝 | ✅ | 신경망 다층 구조 |
-| CNN | ✅ | 합성곱 신경망 |
-| RNN | ✅ | 순환 신경망 |
-| Transformer | ✅ | 어텐션 메커니즘 |
+| 기계 학습 | ✅ | 머신러닝 기본 |
+| 딥 러닝 | ✅ | 신경망 다층 구조 |
+| 합성곱 신경망 | ✅ | CNN, 이미지 인식 |
+| 순환 신경망 | ✅ | RNN, 시퀀스 처리 |
+| 장단기 메모리 | ✅ | LSTM, 장기 의존성 |
+| 게이트 순환 유닛 | ✅ | GRU, LSTM 대안 |
+| 트랜스포머 | ✅ | 어텐션 메커니즘 |
 | GPT | ✅ | 생성형 언어모델 |
-| AlphaGo | ✅ | 강화학습 사례 |
-| ... | ... | ... |
+| 알파고 | ✅ | 강화학습 사례 |
+| 강화 학습 | ✅ | 강화학습 기본 |
+
+## 🐛 문제 해결
+
+### OpenAI API 키 오류
+```bash
+오류: OPENAI_API_KEY 환경변수가 설정되지 않았습니다.
+```
+- `.env` 파일에 올바른 API 키가 설정되어 있는지 확인
+- `export OPENAI_API_KEY='your-api-key-here'` 실행
+
+### 벡터 데이터베이스가 비어있음
+```bash
+벡터 데이터베이스가 비어있습니다.
+```
+- `uv run python rag/build_vectordb.py` 먼저 실행
+
+### 의존성 오류
+```bash
+ModuleNotFoundError: No module named 'chromadb'
+```
+- `uv sync` 실행하여 의존성 설치
 
 ## 📖 추가 문서
 
-- [RAG 사용 가이드](docs/rag_usage.md)
-- [MCP 설정 가이드](docs/mcp_setup.md)  
-- [데이터 포맷 설명](docs/data_format.md)
+- [RAG 시스템 상세 가이드](rag/README.md)
+- [MCP 서버 설정 가이드](mcp-server/MCP_README.md)
+- [프로젝트 구조 상세](project_structure.md)
+
+## 🎉 완료!
+
+이제 RAG 시스템을 사용하여 AI/ML 관련 질문에 대해 정확하고 상세한 답변을 받을 수 있습니다!

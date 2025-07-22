@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from util.data_parser import WikiDataParser
+from .data_parser import WikiDataParser
 
 
 def main():
