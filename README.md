@@ -103,12 +103,49 @@ uv run python mcp_rag_server.py
 ```
 
 **Cursor에서 연결:**
-1. Settings > Extensions > MCP > Add Server
-2. Server: `localhost:8000`
+1. Cursor 설정 파일 열기: `~/.cursor/mcp.json`
+2. 다음 설정 추가:
+```json
+{
+  "mcpServers": {
+    "rag-server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/nautilus22/Work/LLM-Project/mcp-rag-test/mcp-server",
+        "run",
+        "mcp_rag_server.py"
+      ]
+    }
+  }
+}
+```
+3. Cursor 재시작
 
 **Claude Desktop에서 연결:**
-1. `~/.claude_desktop_config.json` 파일 수정
-2. 제공된 `mcp_config.json` 참조
+1. Claude Desktop 설정 파일 열기: `~/Library/Application Support/Claude/claude_desktop_config.json`
+2. 다음 설정 추가:
+```json
+{
+  "mcpServers": {
+    "rag-server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/nautilus22/Work/LLM-Project/mcp-rag-test/mcp-server",
+        "run",
+        "mcp_rag_server.py"
+      ]
+    }
+  }
+}
+```
+3. Claude Desktop 재시작
+
+**주의사항:**
+- 경로는 절대 경로를 사용해야 합니다
+- `uv` 명령어 경로가 다를 수 있습니다 (`which uv`로 확인)
+- 서버가 실행 중이어야 합니다
 
 ## 📋 생성되는 파일 예시
 
