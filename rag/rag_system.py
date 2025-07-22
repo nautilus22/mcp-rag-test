@@ -7,28 +7,26 @@ from .vector_store import VectorStore
 class RAGSystem:
     """완전한 RAG 시스템 클래스"""
     
-    def __init__(self, data_dir: str = "data/raw", vectordb_dir: str = "data/vectordb", preprocessed_dir: str = "data/preprocessed"):
+    def __init__(self, data_dir: str = "data/rag_docs", vectordb_dir: str = "data/vectordb"):
         self.data_dir = Path(data_dir)
         self.vectordb_dir = Path(vectordb_dir)
-        self.preprocessed_dir = Path(preprocessed_dir)
         
         # 컴포넌트 초기화
-        self.markdown_processor = MarkdownProcessor(str(self.preprocessed_dir))
         self.vector_store = VectorStore(str(self.vectordb_dir))
     
     def build_vector_database(self) -> bool:
-        """마크다운 파일들을 처리하여 벡터 데이터베이스를 구축합니다."""
+        """RAG용 텍스트 파일들을 처리하여 벡터 데이터베이스를 구축합니다."""
         try:
-            print("마크다운 파일 처리 중...")
+            print("RAG용 텍스트 파일 처리 중...")
             
-            # 마크다운 파일 처리
-            processed_documents = self.markdown_processor.process_directory(self.data_dir)
+            # 텍스트 파일 처리
+            processed_documents = self.process_text_files()
             
             if not processed_documents:
-                print("처리할 마크다운 파일이 없습니다.")
+                print("처리할 텍스트 파일이 없습니다.")
                 return False
             
-            print(f"총 {len(processed_documents)}개의 마크다운 파일이 처리되었습니다.")
+            print(f"총 {len(processed_documents)}개의 텍스트 파일이 처리되었습니다.")
             
             # 벡터 저장소에 추가
             print("벡터 저장소에 문서 추가 중...")
@@ -76,7 +74,6 @@ class RAGSystem:
         print(f"원본 크기: {total_original_size:,} 문자")
         print(f"전처리 후 크기: {total_preprocessed_size:,} 문자")
         print(f"압축률: {((total_original_size - total_preprocessed_size) / total_original_size * 100):.1f}%")
-        print(f"\n전처리된 텍스트 저장 경로: {self.preprocessed_dir}")
         print(f"벡터 DB 저장 경로: {self.vectordb_dir}")
         
         print("\n파일별 상세 정보:")
@@ -93,6 +90,67 @@ class RAGSystem:
             print(f"  - 컬렉션명: {collection_info['collection_name']}")
             print(f"  - 저장된 문서 수: {collection_info['document_count']}")
             print(f"  - 저장 경로: {collection_info['persist_directory']}")
+    
+    def process_text_files(self) -> List[Dict[str, Any]]:
+        """RAG용 텍스트 파일들을 처리합니다."""
+        processed_documents = []
+        
+        # 텍스트 파일들 찾기
+        text_files = list(self.data_dir.glob("*.txt"))
+        
+        if not text_files:
+            print(f"텍스트 파일을 찾을 수 없습니다: {self.data_dir}")
+            return processed_documents
+        
+        for file_path in text_files:
+            try:
+                result = self.process_single_text_file(file_path)
+                if result:
+                    processed_documents.append(result)
+            except Exception as e:
+                print(f"파일 처리 중 오류 발생 ({file_path.name}): {e}")
+                continue
+        
+        return processed_documents
+    
+    def process_single_text_file(self, file_path: Path) -> Dict[str, Any]:
+        """단일 텍스트 파일을 처리합니다."""
+        try:
+            print(f"파일 처리 중: {file_path.name}")
+            
+            # 파일 읽기
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 청크로 분할
+            from utils.text_processor import TextProcessor
+            text_processor = TextProcessor()
+            chunks = text_processor.split_into_chunks(content)
+            
+            # 메타데이터 생성
+            metadata = {
+                'file_name': file_path.stem,
+                'source': 'rag_docs',
+                'file_size': len(content),
+                'preprocessed_size': len(content),
+                'chunk_count': len(chunks)
+            }
+            
+            result = {
+                'file_path': str(file_path),
+                'file_name': file_path.stem,
+                'original_content': content,
+                'cleaned_text': content,
+                'chunks': chunks,
+                'metadata': metadata
+            }
+            
+            print(f"파일 처리 완료: {len(chunks)}개 청크 생성")
+            return result
+                
+        except Exception as e:
+            print(f"파일 처리 중 오류 발생: {e}")
+            return {}
     
     def get_collection_info(self) -> Dict[str, Any]:
         """벡터 저장소 정보를 반환합니다."""
@@ -115,20 +173,4 @@ class RAGSystem:
             print(f"데이터베이스 초기화 중 오류 발생: {e}")
             return False
     
-    def process_single_file(self, file_path: Path) -> Dict[str, Any]:
-        """단일 마크다운 파일을 처리합니다."""
-        try:
-            print(f"파일 처리 중: {file_path}")
-            result = self.markdown_processor.process_markdown_file(file_path)
-            
-            if result:
-                print(f"파일 처리 완료: {len(result['chunks'])}개 청크 생성")
-                print(f"전처리된 텍스트 저장: {result['preprocessed_path']}")
-                return result
-            else:
-                print("파일 처리에 실패했습니다.")
-                return {}
-                
-        except Exception as e:
-            print(f"파일 처리 중 오류 발생: {e}")
-            return {} 
+ 

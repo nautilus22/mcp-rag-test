@@ -1,6 +1,8 @@
 """
-위키피디아 데이터 다운로드 스크립트
-shared/data_parser.py의 WikiDataParser를 사용하여 위키 문서를 크롤링하고 처리합니다.
+위키피디아 데이터 다운로드 및 처리 스크립트
+1. 크롤링한 원본 텍스트를 raw 폴더에 저장
+2. MCP용 마크다운 처리된 파일을 mcp_docs에 저장  
+3. RAG용 전처리된 파일을 rag_docs에 저장
 """
 
 import sys
@@ -12,12 +14,14 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from utils.data_parser import WikiDataParser
+from utils.markdown_processor import MarkdownProcessor
+from utils.text_processor import TextProcessor
 
 
 def main():
-    """위키피디아 데이터 다운로드 메인 실행"""
+    """위키피디아 데이터 다운로드 및 처리 메인 실행"""
     
-    print("=== 위키피디아 AI/ML 문서 다운로드 ===")
+    print("=== 위키피디아 AI/ML 문서 다운로드 및 처리 ===")
     
     # OpenAI API 키 확인
     api_key = os.getenv('OPENAI_API_KEY')
@@ -43,37 +47,123 @@ def main():
     }
     
     try:
-        # WikiDataParser 초기화
-        output_dir = project_root / "data" / "raw"
-        parser = WikiDataParser(api_key, str(output_dir))
+        # 1단계: 원본 텍스트 크롤링 및 저장
+        print("\n📥 1단계: 원본 텍스트 크롤링 및 저장")
+        raw_dir = project_root / "data" / "raw"
+        raw_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"📁 저장 위치: {output_dir}")
-        print(f"📊 처리할 문서 수: {len(wiki_data)}개")
-        print()
+        raw_results = {}
+        for i, (keyword, url) in enumerate(wiki_data.items(), 1):
+            print(f"\n[{i}/{len(wiki_data)}] 크롤링 중: {keyword}")
+            
+            try:
+                # 위키피디아 크롤링
+                parser = WikiDataParser(api_key, str(raw_dir))
+                title, content = parser.crawl_wikipedia_page(url)
+                
+                if content == "내용을 찾을 수 없습니다.":
+                    print(f"  - 건너뜀: 내용 없음")
+                    continue
+                
+                # 원본 텍스트를 .txt 파일로 저장
+                raw_file_path = raw_dir / f"{keyword}.txt"
+                with open(raw_file_path, 'w', encoding='utf-8') as f:
+                    f.write(f"제목: {title}\n\n")
+                    f.write(content)
+                
+                raw_results[keyword] = str(raw_file_path)
+                print(f"  - 완료: {raw_file_path}")
+                
+            except Exception as e:
+                print(f"  - 오류 발생: {e}")
+                continue
         
-        # 문서 처리 실행
-        results = parser.process_wiki_documents(wiki_data)
+        print(f"\n✅ 원본 텍스트 저장 완료: {len(raw_results)}개 파일")
+        
+        # 2단계: MCP용 마크다운 처리
+        print("\n📝 2단계: MCP용 마크다운 처리")
+        mcp_dir = project_root / "data" / "mcp_docs"
+        mcp_dir.mkdir(parents=True, exist_ok=True)
+        
+        markdown_processor = MarkdownProcessor()
+        mcp_results = {}
+        
+        for keyword, raw_path in raw_results.items():
+            try:
+                print(f"  - 처리 중: {keyword}")
+                
+                # 원본 텍스트 읽기
+                with open(raw_path, 'r', encoding='utf-8') as f:
+                    raw_content = f.read()
+                
+                # 마크다운 처리
+                markdown_content = markdown_processor.process_for_mcp(raw_content)
+                
+                # MCP용 마크다운 파일 저장
+                mcp_file_path = mcp_dir / f"{keyword}.md"
+                with open(mcp_file_path, 'w', encoding='utf-8') as f:
+                    f.write(markdown_content)
+                
+                mcp_results[keyword] = str(mcp_file_path)
+                print(f"    - 완료: {mcp_file_path}")
+                
+            except Exception as e:
+                print(f"    - 오류 발생: {e}")
+                continue
+        
+        print(f"✅ MCP용 마크다운 처리 완료: {len(mcp_results)}개 파일")
+        
+        # 3단계: RAG용 전처리
+        print("\n🔧 3단계: RAG용 전처리")
+        rag_dir = project_root / "data" / "rag_docs"
+        rag_dir.mkdir(parents=True, exist_ok=True)
+        
+        text_processor = TextProcessor()
+        rag_results = {}
+        
+        for keyword, raw_path in raw_results.items():
+            try:
+                print(f"  - 처리 중: {keyword}")
+                
+                # 원본 텍스트 읽기
+                with open(raw_path, 'r', encoding='utf-8') as f:
+                    raw_content = f.read()
+                
+                # RAG용 전처리
+                processed_content = text_processor.process_for_rag(raw_content)
+                
+                # RAG용 텍스트 파일 저장
+                rag_file_path = rag_dir / f"{keyword}.txt"
+                with open(rag_file_path, 'w', encoding='utf-8') as f:
+                    f.write(processed_content)
+                
+                rag_results[keyword] = str(rag_file_path)
+                print(f"    - 완료: {rag_file_path}")
+                
+            except Exception as e:
+                print(f"    - 오류 발생: {e}")
+                continue
+        
+        print(f"✅ RAG용 전처리 완료: {len(rag_results)}개 파일")
         
         # 결과 요약
         print("\n" + "="*60)
         print("📋 처리 결과 요약")
         print("="*60)
+        print(f"✅ 원본 텍스트: {len(raw_results)}개 파일 (data/raw/)")
+        print(f"✅ MCP용 마크다운: {len(mcp_results)}개 파일 (data/mcp_docs/)")
+        print(f"✅ RAG용 전처리: {len(rag_results)}개 파일 (data/rag_docs/)")
         
-        if results:
-            print(f"✅ 성공: {len(results)}개 문서")
-            print(f"❌ 실패: {len(wiki_data) - len(results)}개 문서")
-            print()
+        print("\n📄 생성된 파일 목록:")
+        for keyword in raw_results.keys():
+            print(f"  • {keyword}:")
+            print(f"    - 원본: data/raw/{keyword}.txt")
+            print(f"    - MCP: data/mcp_docs/{keyword}.md")
+            print(f"    - RAG: data/rag_docs/{keyword}.txt")
             
-            print("📄 생성된 파일 목록:")
-            for keyword, file_path in results.items():
-                relative_path = Path(file_path).relative_to(project_root)
-                print(f"  • {keyword}: {relative_path}")
-        else:
-            print("❌ 처리된 문서가 없습니다.")
-            
-        print("\n🎉 다운로드 완료!")
+        print("\n🎉 모든 처리 완료!")
         
-        # MCP 및 RAG 사용 안내
+        # 다음 단계 안내
         print("\n" + "="*60)
         print("📖 다음 단계")
         print("="*60)

@@ -16,3 +16,5 @@ wheels/
 # Data directories
 data/vectordb/*
 data/mcp_docs/*
+data/raw/*
+data/vectordb/*

@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 mcp = FastMCP("rag-server")
 
 # 상수 설정
-DATA_DIR = Path("../data/raw")
-SUPPORTED_EXTENSIONS = {".md", ".txt"}
+DATA_DIR = Path("../data/mcp_docs")
+SUPPORTED_EXTENSIONS = {".md"}
 
 def get_all_documents() -> List[Dict[str, Any]]:
     """

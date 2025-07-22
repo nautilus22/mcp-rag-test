@@ -1,0 +1,5 @@
+제목: 장단기 메모리
+
+장단기 메모리
+
+장단기 메모리(Long Short-Term Memory, LSTM)는 순환 신경망(RNN) 기법의 하나로 셀, 입력 게이트, 출력 게이트, 망각 게이트를 이용해 기존 순환 신경망(RNN)의 문제인 기울기 소멸 문제(vanishing gradient problem)를 방지하도록 개발되었다.
