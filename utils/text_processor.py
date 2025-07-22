@@ -174,7 +174,7 @@ class TextProcessor:
         return '\n'.join(filtered_lines)
     
     def _remove_unnecessary_sections(self, text: str) -> str:
-        """불필요한 섹션 제거"""
+        """불필요한 섹션 제거 (더 보수적으로)"""
         lines = text.split('\n')
         filtered_lines = []
         skip_mode = False
@@ -182,13 +182,14 @@ class TextProcessor:
         for line in lines:
             line_lower = line.lower().strip()
             
-            # 제외할 섹션들
+            # 제외할 섹션들 (더 엄격하게)
             skip_keywords = [
-                '편집', 'edit', '토론', 'talk', '역사', 'history',
+                '편집', 'edit', '토론', 'talk', 
                 '모니터링', 'monitoring', '보호', 'protection',
                 '분류', 'category', '카테고리'
             ]
             
+            # '역사'는 중요한 정보이므로 제외하지 않음
             if any(keyword in line_lower for keyword in skip_keywords):
                 skip_mode = True
                 continue
@@ -208,15 +209,15 @@ class TextProcessor:
         text = re.sub(r'\n{3,}', '\n\n', text)
         text = re.sub(r' +', ' ', text)
         
-        # 특수문자 정리
-        text = re.sub(r'[^\w\s가-힣.,!?;:()\-]', '', text)
+        # 특수문자 정리 (더 보수적으로)
+        # text = re.sub(r'[^\w\s가-힣.,!?;:()\-]', '', text)  # 이전: 너무 공격적
         
         # 앞뒤 공백 제거
         text = text.strip()
         
         return text
     
-    def split_into_chunks(self, text: str, max_chunk_size: int = 1000) -> List[str]:
+    def split_into_chunks(self, text: str, max_chunk_size: int = 2000) -> List[str]:
         """
         텍스트를 청크로 분할 (RAG용)
         

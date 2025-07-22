@@ -44,7 +44,7 @@ class RAGSystem:
             print(f"벡터 데이터베이스 구축 중 오류 발생: {e}")
             return False
     
-    def search(self, query: str, n_results: int = 5) -> List[Dict[str, Any]]:
+    def search(self, query: str, n_results: int = 10) -> List[Dict[str, Any]]:
         """쿼리를 검색하여 관련 문서를 반환합니다."""
         try:
             print(f"쿼리 검색 중: '{query}'")
