@@ -30,8 +30,7 @@ mcp-rag-test/
 │   ├── rag_system.py      # 기본 RAG 시스템
 │   ├── rag_gpt_system.py  # RAG + GPT 결합 시스템
 │   ├── build_vectordb.py  # 벡터 DB 구축 스크립트
-│   ├── chat_demo.py       # 대화형 채팅 데모
-│   └── README.md          # RAG 시스템 상세 문서
+│   └── chat_demo.py       # 대화형 채팅 데모
 ├── utils/                 # 유틸리티 및 데이터 처리
 │   ├── __init__.py
 │   ├── config.py          # 공통 설정
