@@ -16,8 +16,9 @@
 ```
 mcp-rag-test/
 ├── data/                    # 데이터 저장소
-│   ├── raw/                # 원본 마크다운 파일들
-│   ├── preprocessed/       # 전처리된 텍스트 파일들
+│   ├── raw/                # 원본 텍스트 파일들 (.txt)
+│   ├── mcp_docs/           # MCP용 마크다운 파일들 (.md)
+│   ├── rag_docs/           # RAG용 전처리된 텍스트 파일들 (.txt)
 │   └── vectordb/          # ChromaDB 벡터 데이터베이스
 ├── mcp-server/            # MCP 서버 (Cursor/Claude 연동)
 │   ├── mcp_rag_server.py  # MCP RAG 서버
@@ -68,7 +69,9 @@ uv run utils/download_wiki_data.py
 ```
 
 이 명령으로 다음이 생성됩니다:
-- `data/raw/`: 원본 마크다운 파일들 (인공지능.md, 딥 러닝.md, CNN.md 등)
+- `data/raw/`: 원본 텍스트 파일들 (인공지능.txt, 딥러닝.txt, cnn.txt 등)
+- `data/mcp_docs/`: MCP용 마크다운 파일들 (인공지능.md, 딥러닝.md, cnn.md 등)
+- `data/rag_docs/`: RAG용 전처리된 텍스트 파일들 (인공지능.txt, 딥러닝.txt, cnn.txt 등)
 
 ### 3. RAG 시스템 구축
 
@@ -78,8 +81,7 @@ uv run rag/build_vectordb.py
 ```
 
 이 과정에서:
-- 마크다운 파일들이 전처리되어 `data/preprocessed/`에 저장
-- 청크로 분할되어 벡터화
+- `data/rag_docs/`의 전처리된 텍스트 파일들이 청크로 분할되어 벡터화
 - ChromaDB에 저장 (`data/vectordb/`)
 
 ### 4. RAG 시스템 사용
@@ -151,25 +153,47 @@ uv run mcp_rag_server.py
 
 ### 원본 파일 (data/raw/)
 ```
-인공지능.md
-딥 러닝.md
-합성곱 신경망.md
-순환 신경망.md
-장단기 메모리.md
-게이트 순환 유닛.md
-트랜스포머 (기계 학습).md
-GPT (언어 모델).md
-알파고.md
-강화 학습.md
+인공지능.txt
+딥러닝.txt
+cnn.txt
+rnn.txt
+lstm.txt
+gru.txt
+transformer.txt
+gpt.txt
+alphago.txt
+강화학습.txt
+머신러닝.txt
 ```
 
-### 전처리 파일 (data/preprocessed/)
+### MCP용 파일 (data/mcp_docs/)
+```
+인공지능.md
+딥러닝.md
+cnn.md
+rnn.md
+lstm.md
+gru.md
+transformer.md
+gpt.md
+alphago.md
+강화학습.md
+머신러닝.md
+```
+
+### RAG용 파일 (data/rag_docs/)
 ```
 인공지능.txt
-딥 러닝.txt
-합성곱 신경망.txt
-순환 신경망.txt
-...
+딥러닝.txt
+cnn.txt
+rnn.txt
+lstm.txt
+gru.txt
+transformer.txt
+gpt.txt
+alphago.txt
+강화학습.txt
+머신러닝.txt
 ```
 
 ## 🔄 워크플로우
@@ -181,7 +205,7 @@ GPT (언어 모델).md
 
 ### MCP 방식  
 1. 질문 키워드 분석
-2. 관련 txt 파일 직접 접근
+2. 관련 md 파일 직접 접근
 3. 파일 내용을 컨텍스트로 즉시 답변
 
 ## 🛠️ 주요 기능
