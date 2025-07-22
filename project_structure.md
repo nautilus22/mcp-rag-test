@@ -114,13 +114,13 @@ mcp-rag/
 ### RAG 워크플로우
 ```bash
 # 🔧 단계별 스크립트 실행 (자동화)
-python rag/scripts/step1_prepare_data.py      # 데이터 준비 및 전처리
-python rag/scripts/step2_build_vectordb.py    # 벡터 DB 구축  
-python rag/scripts/step3_setup_pipeline.py    # RAG 파이프라인 설정
-python rag/scripts/step4_validate.py          # 파이프라인 검증
+uv run rag/scripts/step1_prepare_data.py      # 데이터 준비 및 전처리
+uv run rag/scripts/step2_build_vectordb.py    # 벡터 DB 구축  
+uv run rag/scripts/step3_setup_pipeline.py    # RAG 파이프라인 설정
+uv run rag/scripts/step4_validate.py          # 파이프라인 검증
 
 # 또는 전체 단계 한번에 실행
-python rag/scripts/run_all_steps.py
+uv run rag/scripts/run_all_steps.py
 
 # 🎯 쿼리 실험 (노트북 사용)
 jupyter notebook rag/notebooks/query_experiments.ipynb
@@ -132,7 +132,7 @@ jupyter notebook rag/notebooks/performance_analysis.ipynb
 ### MCP 서버 사용
 ```bash
 # 1. MCP 서버 실행
-python scripts/run_mcp_server.py
+uv run scripts/run_mcp_server.py
 
 # 2. Cursor에서 MCP 서버 연결
 # - Settings > Extensions > MCP

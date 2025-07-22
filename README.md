@@ -64,7 +64,7 @@ echo "OPENAI_API_KEY=your-api-key-here" > .env
 
 ```bash
 # AI/ML 관련 한국 위키피디아 문서를 크롤링하고 GPT로 요약
-uv run python utils/download_wiki_data.py
+uv run utils/download_wiki_data.py
 ```
 
 이 명령으로 다음이 생성됩니다:
@@ -74,7 +74,7 @@ uv run python utils/download_wiki_data.py
 
 ```bash
 # 벡터 데이터베이스 구축
-uv run python rag/build_vectordb.py
+uv run rag/build_vectordb.py
 ```
 
 이 과정에서:
@@ -86,7 +86,7 @@ uv run python rag/build_vectordb.py
 
 ```bash
 # 대화형 채팅 시작
-uv run python rag/chat_demo.py
+uv run rag/chat_demo.py
 ```
 
 예시 질문:
@@ -99,7 +99,7 @@ uv run python rag/chat_demo.py
 ```bash
 # MCP 서버 실행
 cd mcp-server
-uv run python mcp_rag_server.py
+uv run mcp_rag_server.py
 ```
 
 **Cursor에서 연결:**
@@ -232,7 +232,7 @@ GPT (언어 모델).md
 ```bash
 벡터 데이터베이스가 비어있습니다.
 ```
-- `uv run python rag/build_vectordb.py` 먼저 실행
+- `uv run rag/build_vectordb.py` 먼저 실행
 
 ### 의존성 오류
 ```bash

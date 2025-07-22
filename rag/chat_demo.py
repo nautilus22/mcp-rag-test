@@ -42,7 +42,7 @@ def main():
     collection_info = rag_gpt.rag_system.get_collection_info()
     if not collection_info or collection_info.get('document_count', 0) == 0:
         print("벡터 데이터베이스가 비어있습니다.")
-        print("먼저 'python rag/build_vectordb.py'를 실행하여 데이터베이스를 구축해주세요.")
+        print("먼저 'uv run rag/build_vectordb.py'를 실행하여 데이터베이스를 구축해주세요.")
         return False
     
     print(f"벡터 데이터베이스 정보:")

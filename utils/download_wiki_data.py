@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from .data_parser import WikiDataParser
+from utils.data_parser import WikiDataParser
 
 
 def main():
@@ -78,10 +78,14 @@ def main():
         print("📖 다음 단계")
         print("="*60)
         print("1. RAG 시스템 구축:")
-        print("   python rag/scripts/step1_prepare_data.py")
+        print("   uv run rag/build_vectordb.py")
         print()
-        print("2. MCP 서버 실행:")
-        print("   python scripts/run_mcp_server.py")
+        print("2. RAG 채팅 데모:")
+        print("   uv run rag/chat_demo.py")
+        print()
+        print("3. MCP 서버 실행:")
+        print("   cd mcp-server")
+        print("   uv run mcp_rag_server.py")
         
     except KeyboardInterrupt:
         print("\n\n⏹️  사용자에 의해 중단되었습니다.")

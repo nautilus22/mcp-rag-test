@@ -161,7 +161,7 @@ async def main():
         if success:
             print("🎉 모든 테스트가 성공적으로 완료되었습니다!")
             print("\n다음 명령으로 MCP 서버를 실행할 수 있습니다:")
-            print("   python mcp_rag_server.py")
+            print("   uv run mcp_rag_server.py")
         else:
             print("⚠️  일부 테스트에서 문제가 발견되었습니다.")
             

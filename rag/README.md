@@ -35,7 +35,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 `data/raw` 디렉토리의 마크다운 파일들을 처리하여 벡터 데이터베이스를 구축합니다:
 
 ```bash
-python rag/build_vectordb.py
+uv run rag/build_vectordb.py
 ```
 
 ### 2. RAG + GPT 대화형 채팅
@@ -43,7 +43,7 @@ python rag/build_vectordb.py
 구축된 벡터 데이터베이스를 사용하여 GPT와 함께 대화형 채팅을 수행합니다:
 
 ```bash
-python rag/chat_demo.py
+uv run rag/chat_demo.py
 ```
 
 ### 3. 검색 데모 실행 (기본 RAG만)
@@ -51,7 +51,7 @@ python rag/chat_demo.py
 벡터 데이터베이스를 사용하여 기본 검색을 수행합니다:
 
 ```bash
-python rag/search_demo.py
+uv run rag/search_demo.py
 ```
 
 ### 4. 프로그래밍 방식 사용
@@ -161,7 +161,7 @@ rag/
 ```
 벡터 데이터베이스가 비어있습니다.
 ```
-- `python rag/build_vectordb.py`를 먼저 실행하여 데이터베이스를 구축하세요.
+- `uv run rag/build_vectordb.py`를 먼저 실행하여 데이터베이스를 구축하세요.
 
 ### 의존성 오류
 ```
