@@ -14,7 +14,7 @@ wheels/
 .DS_Store
 
 # Data directories
-data/vectordb/*
-data/mcp_docs/*
-data/raw/*
-data/vectordb/*
+data/vectordb/
+data/mcp_docs/
+data/raw/
+data/rag_docs/
