@@ -4,7 +4,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "/absolute/path/to/your/project/mcp-server",
+        "/path/to/your/project-root/mcp-server",
         "run",
         "mcp_rag_server.py"
       ],

@@ -14,7 +14,7 @@
 ## 📂 프로젝트 구조
 
 ```
-mcp-rag-test/
+project-root/
 ├── data/                    # 데이터 저장소
 │   ├── raw/                # 원본 텍스트 파일들 (.txt)
 │   ├── mcp_docs/           # MCP용 마크다운 파일들 (.md)
@@ -113,7 +113,7 @@ uv run mcp_rag_server.py
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/nautilus22/Work/LLM-Project/mcp-rag-test/mcp-server",
+        "/path/to/your/project-root/mcp-server",
         "run",
         "mcp_rag_server.py"
       ]
@@ -133,7 +133,7 @@ uv run mcp_rag_server.py
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/nautilus22/Work/LLM-Project/mcp-rag-test/mcp-server",
+        "/path/to/your/project-root/mcp-server",
         "run",
         "mcp_rag_server.py"
       ]

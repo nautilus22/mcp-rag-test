@@ -39,7 +39,7 @@ uv add fastmcp
 
 예시 구조:
 ```
-mcp-rag-test/
+project-root/
 ├── data/raw/
 │   ├── 인공지능.md
 │   ├── 기계 학습.md
